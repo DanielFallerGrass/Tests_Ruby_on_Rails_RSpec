@@ -1,0 +1,9 @@
+#instale a gem
+gem install rspec
+
+#inicialize o rspec no seu projeto
+rspec --init
+
+#crie os arquivos
+mkdir lib && mkdir spec/lib
+
