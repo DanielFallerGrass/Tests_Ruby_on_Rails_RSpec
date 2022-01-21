@@ -1,4 +1,7 @@
 # Minicurso de Testes para Ruby on Rails com RSpec
+
+## instalando GEM RSpec
+- Para instalar a gem do RSpec basta ler o seguinte arquivo [link](https://github.com/DanielFallerGrass/Tests_Ruby_on_Rails_RSpec/blob/main/leia-me.txt).
 ## _Principais elementos do Rspec_
 - describe
 - context
@@ -120,39 +123,39 @@ expect(actual).to match(/expression /)
 
 ### Matchers TRUE/FALSE/NIL
 ```rb
-  #Passa enquanto o valor não for false ou nil
-  expect(actual).to be_truthy
-  
-  # Passa quando o valor for == true
-  expect(actual).to be true
+#Passa enquanto o valor não for false ou nil
+expect(actual).to be_truthy
 
-  # Passa se o valor for false ou nil
-  expect(actual.to be_falsy
+# Passa quando o valor for == true
+expect(actual).to be true
 
-  # Passa quando valor for ==false
-  expect(actual).to be false
+# Passa se o valor for false ou nil
+expect(actual.to be_falsy
 
-  # Passa se o valor for nil
-  expect(actual).to be_nil
+# Passa quando valor for ==false
+expect(actual).to be false
 
-  # Passa se o valor não for nil
-  expect(actual).to_not be_nil
+# Passa se o valor for nil
+expect(actual).to be_nil
+
+# Passa se o valor não for nil
+expect(actual).to_not be_nil
 ```
 
 ### Matchers de erro
 
 ```rb
-  # Passa se a chamada levantar um erro
-  expect( ... ).to raise_error
+# Passa se a chamada levantar um erro
+expect( ... ).to raise_error
 
-  # Passa se a chamada levantar um erro do tipo ErrorClasss
-  expect( ... ).to raise_error(ErrorClass)
+# Passa se a chamada levantar um erro do tipo ErrorClasss
+expect( ... ).to raise_error(ErrorClass)
 
-  # Passa se a chamada levantar um erro com a mensagem "mesagem"
-  expect( ... ).to raise_error("message")
+# Passa se a chamada levantar um erro com a mensagem "mesagem"
+expect( ... ).to raise_error("message")
 
-  # Passa se a chamada levantar um erro do tipo ErrorClass com a mensagem "message"
-  expect( ... ).to raise_error(ErrorClass, "message")
+# Passa se a chamada levantar um erro do tipo ErrorClass com a mensagem "message"
+expect( ... ).to raise_error(ErrorClass, "message")
 ```
 Existem outros Matchers, o link para conhecer todos eles: [Link de Matchers](http://ruby-doc.org/core-2.6.1/Object.html#method-i-eql-3F)
 
