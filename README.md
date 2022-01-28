@@ -329,7 +329,7 @@ Isso levará os campos novos para o *banco de dados*
 MELHORANDO NOSSO MODEL
 Criando um enum no model:
 ```rb
-  enum kind: [ :knight, :wizard]
+  enum kind: [ :knight, :wizard ]
 ```
 
 INCLUINDO O MÉTODO TITTLE NO NOSSO MODEL
@@ -419,7 +419,7 @@ require 'rails_helper'
 RSpec.describe User, type: :model do
   it "is invalid if the level is not between 1 and 99" do
     nickname = FFaker::Name.first_name
-    kind = %i[knight wizard].sample
+    kind = %i[ knight wizard ].sample
     level = FFaker::Random.rand(100..99999)
     user = User.new(nickname: nickname, kind: kind, level: level) #usando o new para criar uma instância do objeto "User"
 
@@ -428,7 +428,7 @@ RSpec.describe User, type: :model do
 
   it "returns the correct hero title" do
     nickname = FFaker::Name.first_name
-    kind = %i[knight, wizard].sample
+    kind = %i[ knight, wizard ].sample
     level = FFaker::Random.rand(1..99)
     user = User.create(nickname: nickname, kind: kind, level: level) #usando o create para salvar na base o objeto "User"
     expect(user.title).to eq("#{kind} #{nickname} ##{level}")
@@ -436,6 +436,59 @@ RSpec.describe User, type: :model do
 end
 ```
 ## Melhorando nosso teste com a Gem Factory Bot
+O que é a Gem Factory Bot?
+  * Uma gerramenta para manipularmos records de frma organizada
+  * Exemplo:
+```rb
+  FactoryBot.defie do
+    dactory :weapon do
+      mame { 'excalibur' }
+      kind { :sword }
+```
+Porque ela pode melhorar nossos testes?
+  * Porque nós conseguimos organizar melhor a gestão dos nossos records e passamos a escrever menos códigos repetidos (DRY)
+
+INCLUINDO A GEM FACTORY BOT NO GEMFILE
+```rb
+group :development, :test do
+  ...
+  gem 'factory_bot_rails'
+  ...  
+```
+Após inclusão, rode o `$ bundle install`.
+
+INCLUINDO NO PROETO
+Realizar a configuração no nosso arquivo spec/rails_helper.rb
+
+```rb
+  RSpec.configure do |config|
+    ...
+    config.include FactoryBot::Syxntax::Methods
+    ...
+  end
+```
+
+CRIANDO A PRIMEIRA FACTORY
+```console
+  mkdir spec/factories
+  touch spec/factories/user.rb
+```
+
+DESENVOLVENDO A FACTORY
+```rb
+FactoryBot.define do
+  factory :user do
+    nickname { FFaker::Lorem.word }
+    level { FFaker::Random.rand(1..99) }
+    kind { %i[ knight wizard ].sample}
+  end
+end
+```
+
+ATUALIZANDO O TESTE OS TESTES LEVEL E TÍTULO
+```rb
+
+```
 
 
 **Free Software, Hell Yeah!**
