@@ -1,6 +1,6 @@
 # Minicurso de Testes para Ruby on Rails com RSpec
 
-## instalando GEM RSpec
+## Instalando GEM RSpec
 - Para instalar a gem do RSpec basta ler o seguinte arquivo [link](https://github.com/DanielFallerGrass/Tests_Ruby_on_Rails_RSpec/blob/main/leia-me.txt).
 ## _Principais elementos do Rspec_
 - describe
@@ -158,5 +158,132 @@ expect( ... ).to raise_error("message")
 expect( ... ).to raise_error(ErrorClass, "message")
 ```
 Existem outros Matchers, o link para conhecer todos eles: [Link de Matchers](http://ruby-doc.org/core-2.6.1/Object.html#method-i-eql-3F)
+
+# _Instalando o RSpec no Rails_
+## Criando um novo projeto Rails
+ ```console
+ $ rails new test_like_a_hero
+   create
+   create README.md
+   create Rakefile
+   create .ruby-version
+   create config.ru
+   create .gitignore
+   create Gemfile
+ ```
+ ## Incluindo o RSpec no Gemfile
+ ```rb
+  group :development, :test do
+    ...
+    gem 'rspec-rails', '~>3.8'
+    ...
+  end
+ ```
+
+ Após rodar o 
+ ``` 
+ $ bundle install 
+ ```
+
+ ## Criando Banco de Dados
+ ```console
+ $ rails db:create
+ ```
+Obs: Quando você cria o projeto o rails tem 3 bancos de dados: teste, development, production
+ ## Instale o Rspec
+ ```console
+  $ rails generate rspec:install
+    Running via Spring preloader in process 11272
+      create .rspec
+      create spec
+      create spec/spec_helper.rb
+      create spec/rails_helper.rb
+ ```
+ 
+ Você pode rodar o seguinte comando apenas para confirmar se os testes estão passando corretamente:
+ ```console
+  $ bundle exec rspec
+  No examples found
+
+  Finished in 0.00032 seconds (files took 0.21942 seconds to load)
+  0 examples, 0 failures
+ ```
+
+## Arquivo "SPEC_HELPER.RB"
+* Ele é o arquivo base de configuração do Rspec
+* Exemplo de configuração:
+```rb
+  config.order =:random # Quer dizer que os testes passarão de forma aleatória
+```
+
+## Arquivo "RAILS_HELPER
+* Arquivo que carrega as dependencias do Rails e faz as configurações necessárias para que o Rspec rode em conjunto com ele
+* Exemplo de configuração: 
+```rb
+  config.use_transactional_fixtures = true # Significa que toda vez que rodar o teste o Banco de Dados será limpo antes.
+```
+
+# _Usando Generators_
+##  Generators no RSpec-Rail
+* Scripts que geram arquivos de testes com a estrutura básica prota para que você possa criar seus testes facilmente
+
+Coonhecendo alguns `generators`:
+
+GERANDO UM MODEL COM TESTE
+```console
+  $  rails generate model user
+      invoke  active_record
+      create    db/migrate/20220128181255_create_users.rb
+      create    app/models/user.rb
+      invoke    rspec
+      create      spec/models/user_spec.rb
+```
+Esse comando irá criar os arquivo supracitados referente ao `model` do `user_spec.rb` e ficará da seguinte forma:
+```rb
+require 'rails_helper'
+
+RSpec.describe User, type: :model do
+  pending "add some examples to (or delete) #{__FILE__}"
+end
+```
+
+GERANDO UM TESTE DE REQUEST
+```console
+$  rails generate rspec:request User
+      create  spec/requests/users_spec.rb
+```
+
+Esse comando irá criar o arquivo referente a `request` do `user_spec.rb` e ficará da seguinte forma:
+```rb
+require 'rails_helper'
+
+RSpec.describe "Users", type: :request do
+  describe "GET /users" do
+    it "works! (now write some real specs)" do
+      get users_path
+      expect(response).to have_http_status(200)
+    end
+  end
+end
+```
+
+CONHECENDO TODAS AS OPÇÕES
+```console
+  $ rails generate --help | grep rspec
+  rspec:controller
+  rspec:feature
+  rspec:generators
+  rspec:helper
+  rspec:install
+  rspec:integration
+  rspec:job
+  rspec:mailer
+  rspec:model
+  rspec:observer
+  rspec:request
+  rspec:scaffold
+  rspec:system
+  rspec:view
+```
 
 **Free Software, Hell Yeah!**
