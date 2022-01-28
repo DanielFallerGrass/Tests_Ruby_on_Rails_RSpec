@@ -332,7 +332,7 @@ Criando um enum no model:
   enum kind: [ :knight, :wizard]
 ```
 
-INCLUINDO O MÉTIDO TITTLE NO NOSSO MODEL
+INCLUINDO O MÉTODO TITTLE NO NOSSO MODEL
 ```rb
 def tittle
   "#{self.kind} #{self.nickname} ##{self.level}"
@@ -356,5 +356,86 @@ class User < ApplicationRecord
 end
 
 ```
+
+## Preparando a base do nosso teste
+Vamos ajustar o no spec do model user `spec/models/user_spec.rb`
+```rb
+require 'rails_helper'
+
+RSpec.describe User, type: :model do
+  it "is invalid if the level is not between 1 and 99"
+  it "returns the correct hero title"
+end  
+```
+
+IMPLEMENTANDO O NOSSO TESTE DO SPEC DO MODEL
+```rb
+require 'rails_helper'
+
+RSpec.describe User, type: :model do
+  it "is invalid if the level is not between 1 and 99" do
+    expect(User.create(nickname: 'Chronos', kind: :wizard, level: 100)).to_not be_valid
+  end
+
+  it "returns the correct hero title" do
+    user = User.create(nickname: 'Chronos', kind: :wizard, level:1)
+    expect(user.title).to eq('wizard Chronos #1')
+  end
+end
+```
+
+Após isso é só rodar o `bundle exec rspec spec/models/user_spec.rb`
+E deverá trazer o seguinte result:
+```rb
+Finished in 0.02444 seconds (files took 0.97558 seconds to load)
+2 examples, 0 failures
+```
+
+## Melhorando o teste com a Gem FFaker
+O que é a gem FFaker?
+ * Uma gem que permite gerar valores aleatórios
+ * exemplo:
+ ```rb
+  FFaker::Name.name #=> "Green wizard"
+  FFaker::Internet.email #=> "green@wizard.com"
+  FFaker::Address.city #=> "camelot"
+ ```
+Por que ela pode melhorar nossos testes?
+  * Porque ela ecita que criemos testes viciados, ou seja, que só funcionam com determinados valores de variáveis.
+
+INCLUINDO A GEM FFAKER NO GEMFILE
+```rb
+group :development, :test do
+  ...
+  gem 'ffaker'
+  ...  
+```
+Após inclusão, rode o `$ bundle install`.
+
+MELHORANDO O TESTE DE LEVEL e TÍTULO
+```rb
+require 'rails_helper'
+
+RSpec.describe User, type: :model do
+  it "is invalid if the level is not between 1 and 99" do
+    nickname = FFaker::Name.first_name
+    kind = %i[knight wizard].sample
+    level = FFaker::Random.rand(100..99999)
+    user = User.new(nickname: nickname, kind: kind, level: level) #usando o new para criar uma instância do objeto "User"
+
+    expect(user).to_not be_valid
+  end
+
+  it "returns the correct hero title" do
+    nickname = FFaker::Name.first_name
+    kind = %i[knight, wizard].sample
+    level = FFaker::Random.rand(1..99)
+    user = User.create(nickname: nickname, kind: kind, level: level) #usando o create para salvar na base o objeto "User"
+    expect(user.title).to eq("#{kind} #{nickname} ##{level}")
+  end
+end
+```
+## Melhorando nosso teste com a Gem Factory Bot
+
 
 **Free Software, Hell Yeah!**
