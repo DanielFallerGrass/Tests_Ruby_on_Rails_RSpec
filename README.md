@@ -286,4 +286,75 @@ CONHECENDO TODAS AS OPÇÕES
   rspec:view
 ```
 
+# _Testando Models_
+
+## Porque e quando testar models
+O que são models?
+  * São classes Ruby que se conectam às tabelas no banco de dados para permitir uma fácil manipulação delas.
+
+Porque testar os models da sua aplicação?
+  * para garantir que a sua estrutura de dados estaeja correta
+  
+Quando testar?
+  * Em geral, quando existem validações customizadas.
+
+## Preparando nosso projeto para o teste
+
+INCREMENTANDO NOSSO MODEL USER
+
+```console
+  # colocando 3 campos no model
+  $ rails g migration add_name_kind_level_to_user nickname:string kind:integer level:integer
+      invoke  active_record
+      create    db/migrate/20220128184633_add_name_kind_level_to_user.rb
+```
+
+* O arquivo gerádo ficará da seguinte forma:
+```rb
+class AddNameKindLevelToUser < ActiveRecord::Migration[7.0]
+  def change
+    add_column :users, :nickname, :string
+    add_column :users, :kind, :integer
+    add_column :users, :level, :integer
+  end
+end
+```
+ATUALIZANDO O BANCO DE DADOS
+Pós isso devemos rodar o 
+```console
+  $ rails db:migrate 
+```
+Isso levará os campos novos para o *banco de dados*
+
+MELHORANDO NOSSO MODEL
+Criando um enum no model:
+```rb
+  enum kind: [ :knight, :wizard]
+```
+
+INCLUINDO O MÉTIDO TITTLE NO NOSSO MODEL
+```rb
+def tittle
+  "#{self.kind} #{self.nickname} ##{self.level}"
+end
+```
+
+INCLUINDO A VALIDAÇÃO DO LEVEL
+```rb
+validates: :level, numericality: {greather_than: 0, less_then_or_equal_to: 99}
+```
+
+RESULTADO DO MODEL USER
+```rb
+class User < ApplicationRecord
+  enum kind: [ :knight, :wizard ]
+  validates :leve, numericality: {greather_than: 0, less_than_or_equal_to: 99}
+
+  def title
+    "#{self.kind} #{self.nickname} ##{self.level}"
+  end
+end
+
+```
+
 **Free Software, Hell Yeah!**
