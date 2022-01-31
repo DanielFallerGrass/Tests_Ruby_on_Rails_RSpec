@@ -175,7 +175,7 @@ Existem outros Matchers, o link para conhecer todos eles: [Link de Matchers](htt
  ```rb
   group :development, :test do
     ...
-    gem 'rspec-rails', '~>3.8'
+    gem 'rspec-rails', '~> 4.0.1'
     ...
   end
  ```
@@ -293,7 +293,7 @@ O que são models?
   * São classes Ruby que se conectam às tabelas no banco de dados para permitir uma fácil manipulação delas.
 
 Porque testar os models da sua aplicação?
-  * para garantir que a sua estrutura de dados estaeja correta
+  * para garantir que a sua estrutura de dados esteja correta
   
 Quando testar?
   * Em geral, quando existem validações customizadas.
@@ -463,7 +463,7 @@ Realizar a configuração no nosso arquivo spec/rails_helper.rb
 ```rb
   RSpec.configure do |config|
     ...
-    config.include FactoryBot::Syxntax::Methods
+    config.include FactoryBot::Syntax::Methods
     ...
   end
 ```
