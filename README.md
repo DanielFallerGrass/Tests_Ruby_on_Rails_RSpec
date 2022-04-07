@@ -506,6 +506,34 @@ RSpec.describe User, type: :model do
 end
 
 ```
+# _Testando Controller_ 
+## O que são testes de Request
 
+São testes de integração (são testes que testam vários componentes ao mesmo tempo) que realiza uma chamada completa ao endpoint e valida se o mesmo está respondendo adequadamente.
 
+Exemplo
+```rb
+describe "GET /home" do
+  it "has the message 'Hello World'" do
+    get home_path
+    expect(response.body).to include ("Hello World")
+  end
+end
+```
+
+## Criando nosso controller
+```console
+$ rails g controller users index create --no-helper --no-assets --no-controller-specs --no-view-specs-skip-routes
+```
+
+Resultado: app/controllers/user_controller.rb
+```rb
+class UserController < ApplicationController
+  def index
+  end
+
+  def create
+  end
+end
+```
 **Free Software, Hell Yeah!**
