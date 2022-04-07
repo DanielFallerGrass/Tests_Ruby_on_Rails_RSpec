@@ -485,7 +485,7 @@ FactoryBot.define do
 end
 ```
 
-ATUALIZANDO O TESTE OS TESTES LEVEL E TÍTULO
+ATUALIZANDO OS TESTES LEVEL E TÍTULO
 ```rb
 require 'rails_helper'
 
