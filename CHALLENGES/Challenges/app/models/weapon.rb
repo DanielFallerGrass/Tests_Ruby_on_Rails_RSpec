@@ -4,7 +4,7 @@ class Weapon < ApplicationRecord
 
   def current_power
     # Esse método mostra o poder atual da weapon
-    power_base + (leve-1) *  power_step
+    power_base + (level-1) *  power_step
   end
 
   def title
