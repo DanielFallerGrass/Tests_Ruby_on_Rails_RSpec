@@ -13,7 +13,7 @@ RSpec.describe 'Weapons', type: :request do
     end
   end
 
-  describe 'POST /weapons' do
+  describe 'POST /create' do
     context 'when it has valid parameters' do
       it 'creates the weapon with correct attributes' do
         weapon_attributes = FactoryBot.attributes_for(:weapon)

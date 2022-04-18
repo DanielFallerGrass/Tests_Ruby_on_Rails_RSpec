@@ -1,17 +1,21 @@
 # Minicurso de Testes para Ruby on Rails com RSpec
 
 ## Instalando GEM RSpec
+
 - Para instalar a gem do RSpec basta ler o seguinte arquivo [link](https://github.com/DanielFallerGrass/Tests_Ruby_on_Rails_RSpec/blob/main/leia-me.txt).
+
 ## _Principais elementos do Rspec_
+
 - describe
 - context
 - it
 - expect
 
 ### describe
+
  É usado para definir um "Grupo de Exemplos".
  Pode receber um nome de uma classe ou uma string com parâmetros.
- 
+
 ```rb
 describe Hero do
     ...
@@ -19,9 +23,12 @@ describe Hero do
     ...
 end 
 ```
+
 ### context
+
 Agrupar testes associados ao mesmo contexto.
 Não é obrigatório mas ajuda a tornar os testes mais legíveis e simples
+
 ```rb
 describe Hero do
     context 'quando está com a armadura' do
@@ -32,7 +39,9 @@ end
 ```
 
 ### it
+
  É usado para definir um exemplo.
+
 ```rb
 describe Hero do
     context 'quando está com a armadura' do
@@ -44,6 +53,7 @@ end
 ```
 
 ### expect
+
  É onde verificamos se uma determinada condição está ocorrendo para concluirmos que nosso teste passou.
 
 ```rb
@@ -58,11 +68,15 @@ end
 ```
 
 # _Matchers_
+
 Matcher é uma intrução para verificar se uma determinada intrução está sendo atendida
+
 ```rb
 expect(message).to eq"Hello World!"
 ```
+
 ### Matcher de equivalência e identidade
+
 ```rb
 # Passa se o valor for == esperado
 expect(atual).to eq(expected)
@@ -88,12 +102,14 @@ value1 == value2 #=> true
 value1.eql? value2 #=> false
 value1.equal? value2 #=> false
 ```
-Material de apoio : 
+
+Material de apoio :
+
 - [Diferença entre eql? e equal?](https://www.campuscode.com.br/conteudos/igualdade-de-objetos-em-ruby#:~:text=Comparando%20strings%2C%20eql%3F,falso%2C%20enquanto%20%3D%3D%20%2C%20verdadeiro)
 - [Diferença entre .dup e .clone](https://coderwall.com/p/1zflyg/ruby-the-differences-between-dup-clone)
 
-
 ### Matchers de comparação
+
 ```rb
 # Passa se o valor for maior que x
 expect(actual).to be > x
@@ -113,6 +129,7 @@ expect(actual).to match(/expression /)
 ```
 
 ### Matchers de classe e tipo
+
  ```rb
  # Passa se o objecto for uma instância da classe esperada
  expect(actual).to be_an_instance_off(expect)
@@ -122,6 +139,7 @@ expect(actual).to match(/expression /)
  ```
 
 ### Matchers TRUE/FALSE/NIL
+
 ```rb
 #Passa enquanto o valor não for false ou nil
 expect(actual).to be_truthy
@@ -157,10 +175,13 @@ expect( ... ).to raise_error("message")
 # Passa se a chamada levantar um erro do tipo ErrorClass com a mensagem "message"
 expect( ... ).to raise_error(ErrorClass, "message")
 ```
+
 Existem outros Matchers, o link para conhecer todos eles: [Link de Matchers](http://ruby-doc.org/core-2.6.1/Object.html#method-i-eql-3F)
 
 # _Instalando o RSpec no Rails_
+
 ## Criando um novo projeto Rails
+
  ```console
  $ rails new test_like_a_hero
    create
@@ -171,7 +192,9 @@ Existem outros Matchers, o link para conhecer todos eles: [Link de Matchers](htt
    create .gitignore
    create Gemfile
  ```
- ## Incluindo o RSpec no Gemfile
+
+## Incluindo o RSpec no Gemfile
+
  ```rb
   group :development, :test do
     ...
@@ -180,17 +203,22 @@ Existem outros Matchers, o link para conhecer todos eles: [Link de Matchers](htt
   end
  ```
 
- Após rodar o 
- ``` 
- $ bundle install 
+ Após rodar o
+
+ ```
+ bundle install 
  ```
 
- ## Criando Banco de Dados
+## Criando Banco de Dados
+
  ```console
- $ rails db:create
+ rails db:create
  ```
+
 Obs: Quando você cria o projeto o rails tem 3 bancos de dados: teste, development, production
- ## Instale o Rspec
+
+## Instale o Rspec
+
  ```console
   $ rails generate rspec:install
     Running via Spring preloader in process 11272
@@ -199,8 +227,9 @@ Obs: Quando você cria o projeto o rails tem 3 bancos de dados: teste, developme
       create spec/spec_helper.rb
       create spec/rails_helper.rb
  ```
- 
+
  Você pode rodar o seguinte comando apenas para confirmar se os testes estão passando corretamente:
+
  ```console
   $ bundle exec rspec
   No examples found
@@ -210,26 +239,35 @@ Obs: Quando você cria o projeto o rails tem 3 bancos de dados: teste, developme
  ```
 
 ## Arquivo "SPEC_HELPER.RB"
-* Ele é o arquivo base de configuração do Rspec
-* Exemplo de configuração:
+
+- Ele é o arquivo base de configuração do Rspec
+
+- Exemplo de configuração:
+
 ```rb
   config.order =:random # Quer dizer que os testes passarão de forma aleatória
 ```
 
 ## Arquivo "RAILS_HELPER
-* Arquivo que carrega as dependencias do Rails e faz as configurações necessárias para que o Rspec rode em conjunto com ele
-* Exemplo de configuração: 
+
+- Arquivo que carrega as dependencias do Rails e faz as configurações necessárias para que o Rspec rode em conjunto com ele
+
+- Exemplo de configuração:
+
 ```rb
   config.use_transactional_fixtures = true # Significa que toda vez que rodar o teste o Banco de Dados será limpo antes.
 ```
 
 # _Usando Generators_
-##  Generators no RSpec-Rail
-* Scripts que geram arquivos de testes com a estrutura básica prota para que você possa criar seus testes facilmente
+
+## Generators no RSpec-Rail
+
+- Scripts que geram arquivos de testes com a estrutura básica prota para que você possa criar seus testes facilmente
 
 Coonhecendo alguns `generators`:
 
 GERANDO UM MODEL COM TESTE
+
 ```console
   $  rails generate model user
       invoke  active_record
@@ -238,7 +276,9 @@ GERANDO UM MODEL COM TESTE
       invoke    rspec
       create      spec/models/user_spec.rb
 ```
+
 Esse comando irá criar os arquivo supracitados referente ao `model` do `user_spec.rb` e ficará da seguinte forma:
+
 ```rb
 require 'rails_helper'
 
@@ -248,12 +288,14 @@ end
 ```
 
 GERANDO UM TESTE DE REQUEST
+
 ```console
 $  rails generate rspec:request User
       create  spec/requests/users_spec.rb
 ```
 
 Esse comando irá criar o arquivo referente a `request` do `user_spec.rb` e ficará da seguinte forma:
+
 ```rb
 require 'rails_helper'
 
@@ -268,6 +310,7 @@ end
 ```
 
 CONHECENDO TODAS AS OPÇÕES
+
 ```console
   $ rails generate --help | grep rspec
   rspec:controller
@@ -289,14 +332,18 @@ CONHECENDO TODAS AS OPÇÕES
 # _Testando Models_
 
 ## Porque e quando testar models
+
 O que são models?
-  * São classes Ruby que se conectam às tabelas no banco de dados para permitir uma fácil manipulação delas.
+
+- São classes Ruby que se conectam às tabelas no banco de dados para permitir uma fácil manipulação delas.
 
 Porque testar os models da sua aplicação?
-  * para garantir que a sua estrutura de dados esteja correta
+
+- para garantir que a sua estrutura de dados esteja correta
   
 Quando testar?
-  * Em geral, quando existem validações customizadas.
+
+- Em geral, quando existem validações customizadas.
 
 ## Preparando nosso projeto para o teste
 
@@ -309,7 +356,8 @@ INCREMENTANDO NOSSO MODEL USER
       create    db/migrate/20220128184633_add_name_kind_level_to_user.rb
 ```
 
-* O arquivo gerádo ficará da seguinte forma:
+- O arquivo gerádo ficará da seguinte forma:
+
 ```rb
 class AddNameKindLevelToUser < ActiveRecord::Migration[7.0]
   def change
@@ -319,20 +367,25 @@ class AddNameKindLevelToUser < ActiveRecord::Migration[7.0]
   end
 end
 ```
+
 ATUALIZANDO O BANCO DE DADOS
-Pós isso devemos rodar o 
+Pós isso devemos rodar o
+
 ```console
-  $ rails db:migrate 
+  rails db:migrate 
 ```
-Isso levará os campos novos para o *banco de dados*
+
+Isso levará os campos novos para o _banco de dados_
 
 MELHORANDO NOSSO MODEL
 Criando um enum no model:
+
 ```rb
   enum kind: [ :knight, :wizard ]
 ```
 
 INCLUINDO O MÉTODO TITTLE NO NOSSO MODEL
+
 ```rb
 def tittle
   "#{self.kind} #{self.nickname} ##{self.level}"
@@ -340,11 +393,13 @@ end
 ```
 
 INCLUINDO A VALIDAÇÃO DO LEVEL
+
 ```rb
 validates: :level, numericality: {greather_than: 0, less_then_or_equal_to: 99}
 ```
 
 RESULTADO DO MODEL USER
+
 ```rb
 class User < ApplicationRecord
   enum kind: [ :knight, :wizard ]
@@ -358,7 +413,9 @@ end
 ```
 
 ## Preparando a base do nosso teste
+
 Vamos ajustar o no spec do model user `spec/models/user_spec.rb`
+
 ```rb
 require 'rails_helper'
 
@@ -369,6 +426,7 @@ end
 ```
 
 IMPLEMENTANDO O NOSSO TESTE DO SPEC DO MODEL
+
 ```rb
 require 'rails_helper'
 
@@ -386,33 +444,42 @@ end
 
 Após isso é só rodar o `bundle exec rspec spec/models/user_spec.rb`
 E deverá trazer o seguinte result:
+
 ```rb
 Finished in 0.02444 seconds (files took 0.97558 seconds to load)
 2 examples, 0 failures
 ```
 
 ## Melhorando o teste com a Gem FFaker
+
 O que é a gem FFaker?
- * Uma gem que permite gerar valores aleatórios
- * exemplo:
+
+- Uma gem que permite gerar valores aleatórios
+- exemplo:
+
  ```rb
   FFaker::Name.name #=> "Green wizard"
   FFaker::Internet.email #=> "green@wizard.com"
   FFaker::Address.city #=> "camelot"
  ```
+
 Por que ela pode melhorar nossos testes?
-  * Porque ela ecita que criemos testes viciados, ou seja, que só funcionam com determinados valores de variáveis.
+
+- Porque ela ecita que criemos testes viciados, ou seja, que só funcionam com determinados valores de variáveis.
 
 INCLUINDO A GEM FFAKER NO GEMFILE
+
 ```rb
 group :development, :test do
   ...
   gem 'ffaker'
   ...  
 ```
+
 Após inclusão, rode o `$ bundle install`.
 
 MELHORANDO O TESTE DE LEVEL e TÍTULO
+
 ```rb
 require 'rails_helper'
 
@@ -435,26 +502,34 @@ RSpec.describe User, type: :model do
   end
 end
 ```
+
 ## Melhorando nosso teste com a Gem Factory Bot
+
 O que é a Gem Factory Bot?
-  * Uma gerramenta para manipularmos records de frma organizada
-  * Exemplo:
+
+- Uma gerramenta para manipularmos records de frma organizada
+- Exemplo:
+
 ```rb
   FactoryBot.defie do
     dactory :weapon do
       mame { 'excalibur' }
       kind { :sword }
 ```
+
 Porque ela pode melhorar nossos testes?
-  * Porque nós conseguimos organizar melhor a gestão dos nossos records e passamos a escrever menos códigos repetidos (DRY)
+
+- Porque nós conseguimos organizar melhor a gestão dos nossos records e passamos a escrever menos códigos repetidos (DRY)
 
 INCLUINDO A GEM FACTORY BOT NO GEMFILE
+
 ```rb
 group :development, :test do
   ...
   gem 'factory_bot_rails'
   ...  
 ```
+
 Após inclusão, rode o `$ bundle install`.
 
 INCLUINDO NO PROETO
@@ -469,12 +544,14 @@ Realizar a configuração no nosso arquivo spec/rails_helper.rb
 ```
 
 CRIANDO A PRIMEIRA FACTORY
+
 ```console
   mkdir spec/factories
   touch spec/factories/user.rb
 ```
 
 DESENVOLVENDO A FACTORY
+
 ```rb
 FactoryBot.define do
   factory :user do
@@ -486,6 +563,7 @@ end
 ```
 
 ATUALIZANDO OS TESTES LEVEL E TÍTULO
+
 ```rb
 require 'rails_helper'
 
@@ -506,12 +584,15 @@ RSpec.describe User, type: :model do
 end
 
 ```
-# _Testando Controller_ 
+
+# _Testando Controller_
+
 ## O que são testes de Request
 
 São testes de integração (são testes que testam vários componentes ao mesmo tempo) que realiza uma chamada completa ao endpoint e valida se o mesmo está respondendo adequadamente.
 
 Exemplo
+
 ```rb
 describe "GET /home" do
   it "has the message 'Hello World'" do
@@ -522,11 +603,13 @@ end
 ```
 
 ## Criando nosso controller
+
 ```console
-$ rails g controller users index create --no-helper --no-assets --no-controller-specs --no-view-specs-skip-routes
+rails g controller users index create --no-helper --no-assets --no-controller-specs --no-view-specs-skip-routes
 ```
 
 Resultado: app/controllers/user_controller.rb
+
 ```rb
 class UserController < ApplicationController
   def index
@@ -537,7 +620,8 @@ class UserController < ApplicationController
 end
 ```
 
-Ajustando /spec/requests/users_spec.rb 
+Ajustando /spec/requests/users_spec.rb
+
 ```rb
 require 'rails_helper'
 
@@ -576,4 +660,19 @@ RSpec.describe "Users", type: :request do
   end
 end
 ```
+
+# _Porque e quando testar API_
+
+## O que é uma API
+
+API's são maneiras de conectar serviços, com elas é possível se conectar ao google para traduzir uma frase ou ao Watson da IBM para realizar um processamento de linguagem natural.
+
+## Que tipos de testes fazemos em APIs
+
+Testes de request e testes unitários
+
+## Como vamos testar?
+
+Vamos incluir um novo controller com algumas actions no nosso projeto que vão funcionar como endpoints de uma API e depois vamos realizar os testes e as melhorias nos testes.
+
 **Free Software, Hell Yeah!**
