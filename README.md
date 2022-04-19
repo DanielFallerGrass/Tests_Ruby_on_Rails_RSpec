@@ -675,4 +675,122 @@ Testes de request e testes unitários
 
 Vamos incluir um novo controller com algumas actions no nosso projeto que vão funcionar como endpoints de uma API e depois vamos realizar os testes e as melhorias nos testes.
 
+## Criando Controller Enemies
+
+```console
+rails g controller enemies update destroy --no-helper --no-assets --no-controller-specs --no-view-specs --skip-routes
+```
+
+Resultado: app/controllers/user_controller.rb
+
+```rb
+class EnemiesController < ApplicationController
+  def update
+  end
+
+  def destroy
+  end
+end
+```
+## Criando o Model Enemy
+
+```console
+rails g model enemy name:string power_base:integer power_step:integer level:integer kind:integer
+```
+
+Resultado: app/model/enemy.rb
+
+```rb
+class Enemy < ApplicationRecord
+end
+```
+
+## Atualizando o Banco de Dados
+
+Após gerar o model é gerado uma migrate e precisamos atualizar o banco através do cmd:
+
+```console
+rails db:migrate
+```
+
+Resultado:
+```console
+== 20220418194831 CreateEnemies: migrating ====================================
+-- create_table(:enemies)
+   -> 0.0015s
+== 20220418194831 CreateEnemies: migrated (0.0016s) ===========================
+```
+## Incluindo as validações e Métodos em Enemy
+-> app/models/enemy.rb
+
+```rb
+Class Enemy < Application Recorder
+  enum kind: [:goblin, :orc, :demon, :drag]
+  validates :level, numericality: { greater_than: 0, less_than_or_equal_to:99 }
+  validates_presence_of :name, :power_base, :power_step, :level, :kind
+
+  def current_power
+    power_base + ((level - 1)) * power_step
+  end
+end
+```
+
+## Preparando os Métodos auxiliares no Controller
+-> app/controllers/enemies_controller.rb
+
+```rb
+  before action :set_enemy
+
+  private
+  
+  def enemy_params
+    params.permit(:name, :power_base, :power_step, :level, :kind)
+  end
+  
+  def set_enemy
+    @enemy = Enemy.find(params[:id])
+  rescue ActiveRecord::RecordNotFound => e
+    render json: { message: e.message }, status: :not_found
+  end
+```
+
+## Incluindo Método de Atualização
+```rb
+  def update
+    if @enemy.update(enemy_params)
+      render json: @enemy, status: :ok
+    else
+      render json: { erros: @enemy.erros }, status: :unprocessable_entity
+    end
+  end
+```
+
+## Incluindo Método de Remoção (Exclusão)
+
+```rb
+  def destroy
+    @enemy.destroy
+    heead 204
+  end
+```
+## Atualizando as Rotas
+-> config/routes.rb
+
+```rb
+resources :enemies, only: [:update, :destroy]
+```
+
+## Criando Factory
+-> spec/factories/enemies.rb
+```rb
+FactoryBot.define do
+  factory :enemy do
+    name { FFaker::Lore.word }
+    power_base { FFaker::Randomm.rand(1..9999) }
+    power_step { FFaker::Randomm.rand(1..9999) }
+    level { FFaker::Randomm.rand(1..99) }
+    kind { %w[goblin orc demon dragon].sample }
+  end
+end
+```
 **Free Software, Hell Yeah!**
