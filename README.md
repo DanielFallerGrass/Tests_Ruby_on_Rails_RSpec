@@ -793,4 +793,12 @@ FactoryBot.define do
   end
 end
 ```
+
+## Testando o UPDATE enemies da API
+### Gerando o Arquivo de Testes
+
+Console:
+```console
+rails generate rspec:request Enemy
+```
 **Free Software, Hell Yeah!**
