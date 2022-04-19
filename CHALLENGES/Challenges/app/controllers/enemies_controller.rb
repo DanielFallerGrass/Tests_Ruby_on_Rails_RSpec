@@ -1,6 +1,6 @@
 class EnemiesController < ApplicationController
 
-  before action :set_enemy
+  before_action :set_enemy
 
   def update
     if @enemy.update(enemy_params)

@@ -9,4 +9,5 @@ Rails.application.routes.draw do
   # root "articles#index"
 
   resources :weapons, only: [:index, :create, :destroy, :show]
+  resources :enemies, only: [:update, :destroy]
 end

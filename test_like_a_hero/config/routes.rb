@@ -7,5 +7,4 @@ Rails.application.routes.draw do
   # root "articles#index"
 
   resources :users, only: [:index, :create]
-  resources :enemies, only: [:update, :destroy]
 end
