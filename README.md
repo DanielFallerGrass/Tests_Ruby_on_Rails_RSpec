@@ -724,13 +724,13 @@ Resultado:
 -> app/models/enemy.rb
 
 ```rb
-Class Enemy < Application Recorder
-  enum kind: [:goblin, :orc, :demon, :drag]
-  validates :level, numericality: { greater_than: 0, less_than_or_equal_to:99 }
+class Enemy < ApplicationRecord
+  enum kind: [:globin, :orc, :demon, :dragon]
+  validates :level, numericality: { greater_than:0, less_than_or_equal_to: 99 }
   validates_presence_of :name, :power_base, :power_step, :level, :kind
 
   def current_power
-    power_base + ((level - 1)) * power_step
+    power_base + ((level - 1) * power_step)
   end
 end
 ```
@@ -785,10 +785,10 @@ resources :enemies, only: [:update, :destroy]
 ```rb
 FactoryBot.define do
   factory :enemy do
-    name { FFaker::Lore.word }
-    power_base { FFaker::Randomm.rand(1..9999) }
-    power_step { FFaker::Randomm.rand(1..9999) }
-    level { FFaker::Randomm.rand(1..99) }
+    name { FFaker::Lorem.word }
+    power_base { FFaker::Random.rand(1..9999) }
+    power_step { FFaker::Random.rand(1..9999) }
+    level { FFaker::Random.rand(1..99) }
     kind { %w[goblin orc demon dragon].sample }
   end
 end
@@ -801,4 +801,61 @@ Console:
 ```console
 rails generate rspec:request Enemy
 ```
+
+Resultado é criação de um arquivo de testes com o seguinte resultado:
+```rb
+require 'rails_helper'
+
+RSpec.describe "Enemies", type: :request do
+  describe "GET /enemies" do
+    it "works! (now write some real specs)" do
+      get enemies_path
+      expect(response).to have_http_status(200)
+    end
+  end
+end
+```
+
+### Incluindo os Testes do UPDATE
+-> spec/request/enemmies_spec.rb
+
+```rb
+require 'rails_helper'
+
+RSpec.describe 'Enemies', type: :request do
+  describe 'PUT /enemies' do
+    context 'when the enemy exists' do
+      it 'returns status code 200' do
+        enemy = create(:enemy)
+        enemy_attributes = attributes_for(:enemy)
+        put "/enemies/#{enemy.id}", params: enemy_attributes
+        expect(response.to have_http_status(200)) # Verifica status do request
+      end
+
+      it 'updates the record' do
+        enemy = create(:enemy)
+        enemy_attributes = attributes_for(:enemy)
+        put "/enemies/#{enemy.id}", params: enemy_attributes
+        expect(enemy.reload).to have_attributes(enemy_attributes) # Quando existe atualiza o record
+      end
+
+      it 'returns the enemy updated' do
+        enemy = create(:enemy)
+        enemy_attributes = attributes_for(:enemy)
+        put "/enemies/#{enemy.id}", params: enemy_attributes
+
+        json_response = JSON.parse(response.body)
+        expect(enemy.reload).to have_attributes(json_response.except('created_at', 'updated_at')) # Testando com o body
+      end
+
+    end
+
+    context 'when the enemy does not exist' do
+      it 'returns status code 404'
+      it 'returns a not found message'
+    end
+  end
+end
+```
+
 **Free Software, Hell Yeah!**
