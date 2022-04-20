@@ -858,4 +858,268 @@ RSpec.describe 'Enemies', type: :request do
 end
 ```
 
+## Testando o Destroy enemies da API
+
+### Incluindo os Testes do DESTROY
+--> spec/request/enemies_spec.rb
+
+```rb
+  describe 'DELETE /enemies' do
+    context 'when the enemy exists' do
+      it 'returns status code 204' do
+        enemy = create(:enemy)
+        delete "/enemies/#{enemy.id}"
+        expect(response).to have_http_status(204)
+      end
+
+      it 'destroy the record' do
+        enemy = create(:enemy)
+        delete "/enemies/#{enemy.id}"
+        expect { enemy.reload }.to raise_error ActiveRecord::RecordNotFound
+      end
+    end
+
+    context 'when the enemy does not exists' do
+      it 'returns status code 404' do
+        delete "/enemies/0"
+        expect(response).to have_http_status(404)
+      end
+
+      it 'returns a not found message' do
+        delete "/enemies/0"
+        expect(response.body).to match(/Couldn't find Enemy/)
+      end
+    end
+  end
+```
+## O que é um Helper do RSPEC
+
+Métodos que podem ser reaproveitdos ao longo dos  testes.
+Exemplo:
+
+Se cada teste vc precisasse fazer login
+```rb
+module Helpers
+  module Authentication
+    def sign_in_as(user)
+     #Códigos para estabelecer o sign_in
+    end
+  end
+end
+```
+
+### Criando o arquivo do Helper
+
+```console
+mkdir spec/support
+touch spec/support/request_helper.rb
+```
+
+### Incluindo Nosso Módulo Helper de Request
+
+```rb
+module Request
+  module JsonHelpers
+    def json
+      JSON.parse(response.body)
+    end
+  end
+end
+```
+
+### Incluindo no RSPEC
+-->spec/rails_helper.rb
+
+Deve ser descomentado ou inserido caso não tenha o código abaixo:
+
+```rb
+Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }
+
+RSpec.configure do |config|
+  config.include Requests::JsonHelpers, type: :request
+end
+```
+
+### Atualize o Teste: Quando o Inimigo Existe, Retorna o Inimigo Atualizado
+
+```rb
+      it 'returns the enemy updated' do
+        enemy = create(:enemy)
+        enemy_attributes = attributes_for(:enemy)
+        put "/enemies/#{enemy.id}", params: enemy_attributes
+
+        #json_response = JSON.parse(response.body) Agora podemos remover essa linha e alterar a chamada direton para o Json.except
+        #expect(enemy.reload).to have_attributes(json_response.except('created_at', 'updated_at')) # Alterando de `json_Response` para `json` observe como diminuimos nosso código e podemos reaproveitar  nos demais lugares que tinhamos o `json_response`
+
+        expect(enemy.reload).to have_attributes(json.except('created_at', 'updated_at')) # Testando com o body
+      end
+```
+
+## Melhorando nosso Teste com BEFORE e LET !!!
+
+O que é LET?
+
+Let é uma maneira de definir métodos/ variáveis nos nossos testes que só carrega o valor quando é utilizado, e depois do promeiro uso mantém um cache do valor durante todo o teste.
+
+Exemplo:
+
+```rb
+RSpec.describe Hero do
+ let(:hero) { Hero.new }
+
+  it "has a sword" do
+    expect(hero.weapon).to eq('sword')
+  end
+ end
+```
+
+O que são HOOKS?
+
+São métodos que permitem a execução de códigos antes ou depois dos testes.
+Exemplo:
+
+```rb
+RSpec.describe Hero do
+  let(:hero) {Hero.new}
+
+  before(:each) do
+    hero.update(weapon: 'axe') #atualizando antes do it
+  end
+
+  it 'Has an axe' do
+    expect(hero.weapon).to eq('axe')
+  end
+end
+```
+
+MELHORANDO NOSSOS TESTES
+
+DENTRO DO UPDATE NO CONTEXTO
+"QUANDO O INIMIGO EXISTE"
+
+
+Retirar de Cada Teste
+```rb
+  enemy = create(:enemy)
+  enemy_attributes = attributes_for(:enemy)
+  put "/enemies/#{enemy.id}", params: enemy_attributes
+```
+
+Colocar no lugar
+```rb
+  context 'when enemy exists' do
+    let(:enemy) {create(:enemy)}
+    let(:enemy_attributes) { attributes_for(:enemy) }
+
+    before(:each) { put "enemies/#{enemy.id}", params: enemy_attributes }
+  end
+```
+
+Como fica o contexto:
+```rb
+  context 'when the enemy exists' do
+
+    let(:enemy) {create(:enemy)}
+    let(:enemy_attributes) { attributes_for(:enemy) }
+  
+    before(:each) { put "enemies/#{enemy.id}", params: enemy_attributes }
+
+    it 'returns status code 200' do
+      expect(response).to have_http_status(200)
+    end
+
+    it 'updates the record' do
+      expect(enemy.reload).to have_attributes(enemy_attributes) # Quando existe atualiza o record
+    end
+
+    it 'returns the enemy updated' do
+      expect(enemy.reload).to have_attributes(json.except('created_at', 'updated_at')) # Testando com o body
+    end
+  end
+```
+
+
+DENTRO DO UPDATE NO CONTEXTO
+"QUANDO O INIMIGO _NÃO_ EXISTE"
+
+
+Retirar de Cada Teste
+```rb
+put '/enemies/0', params: attributes_for(:enemy)
+```
+
+Colocar no lugar
+```rb
+before(:each) {put '/enemies/0', params: attributes_for(:enemy)}
+```
+
+Como fica o contexto:
+```rb
+  context 'when the enemy does not exist' do
+
+    let(:enemy) {create(:enemy)}
+    let(:enemy_attributes) { attributes_for(:enemy) }
+  
+    before(:each) { put "enemies/#{enemy.id}", params: enemy_attributes }
+
+    it 'returns status code 404' do
+      expect(response).to have_http_status(404)
+    end
+    it 'returns a not found message' do
+      expect(response.body).to match(/Couldn't find Enemy/)
+    end
+  end
+```
+
+
+DENTRO DO DESTROY NO CONTEXTO
+"QUANDO O INIMIGO EXISTE"
+
+
+Retirar de Cada Teste
+```rb
+ enemy = create(:enemy)
+ delete "/enemies/#{enemy.id}"
+```
+
+Colocar no lugar
+```rb
+let(:enemy) { create(:enemy) }
+before(:each) {delete "/enemies/#{enemy.id}"}
+```
+
+Como que fica o contexto:
+```rb
+  context 'when the enemy exists' do
+
+  let(:enemy) { create(:enemy) }
+  before(:each) { delete "/enemies/#{enemy.id}" }
+
+    it 'returns status code 204' do
+      expect(response).to have_http_status(204)
+    end
+
+    it 'destroy the record' do
+      expect { enemy.reload }.to raise_error ActiveRecord::RecordNotFound
+    end
+  end
+```
+
+DENTRO DO DESTROY NO CONTEXTO
+"QUANDO O INIMIGO _NÃO_ EXISTE"
+
+
+Retirar de Cada Teste
+```rb
+delete "/enemies/0"
+```
+
+Colocar no lugar
+```rb
+before(:each) {delete '/enemies/0'}
+```
+
+Como que fica o contexto:
+```rb
+```
 **Free Software, Hell Yeah!**

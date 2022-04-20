@@ -12,7 +12,7 @@ class EnemiesController < ApplicationController
 
   def destroy
     @enemy.destroy
-    heead 204
+    head 204
   end
 
   private
