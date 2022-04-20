@@ -1121,5 +1121,31 @@ before(:each) {delete '/enemies/0'}
 
 Como que fica o contexto:
 ```rb
+  describe 'DELETE /enemies' do
+    context 'when the enemy exists' do
+      let(:enemy) { create(:enemy) }
+      before(:each) { delete "/enemies/#{enemy.id}" }
+
+      it 'returns status code 204' do
+        expect(response).to have_http_status(204)
+      end
+
+      it 'destroy the record' do
+        expect { enemy.reload }.to raise_error ActiveRecord::RecordNotFound
+      end
+    end
+
+    context 'when the enemy does not exists' do
+      before(:each) {delete '/enemies/0'}
+
+      it 'returns status code 404' do
+        expect(response).to have_http_status(404)
+      end
+
+      it 'returns a not found message' do
+        expect(response.body).to match(/Couldn't find Enemy/)
+      end
+    end
+  end
 ```
 **Free Software, Hell Yeah!**
