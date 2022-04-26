@@ -1,6 +1,38 @@
 require 'rails_helper'
 
 RSpec.describe 'Enemies', type: :request do
+  describe 'GET /index' do
+    context 'success' do
+      it 'should be return a list of enemies' do
+        enemies = create_list(:enemy, 3)
+        get enemies_path
+
+        enemies.each do |enemy|
+          expect(response.body).to include(enemy.name)
+        end
+      end
+    end
+  end
+
+  describe 'POST / create' do
+    context 'when has valid parameters' do
+      it 'create a enemy' do
+        enemies_attributes = FactoryBot.attributes_for(:enemy)
+        post enemies_path, params: { enemy: enemies_attributes }
+        expect(Enemy.last).to have_attributes(enemies_attributes)
+      end
+
+    end
+
+    context 'when has no valid parameters' do
+      it 'do not create the weapon with invalid attributes' do
+        expect{
+          post enemies_path, params: { enemy: { name: '', power_base: -1, power_step: -1, level: -1, kind: '' } }
+        }.to_not change(Enemy, :count)
+      end
+    end
+  end
+
   describe 'PUT /enemies' do
     context 'when the enemy exists' do
       let(:enemy) { create(:enemy) }
@@ -56,6 +88,21 @@ RSpec.describe 'Enemies', type: :request do
 
       it 'returns a not found message' do
         expect(response.body).to match(/Couldn't find Enemy/)
+      end
+    end
+  end
+
+  describe "GET /show" do
+    context 'should have return details of one enemy' do
+      let(:enemy) { create(:enemy) }
+
+      it "Whether all attributes have been displayed on the screen" do
+        get enemies_path(enemy)
+        expect(response.body).to include(enemy.name)
+        expect(response.body).to include(enemy.power_base.to_s)
+        expect(response.body).to include(enemy.power_step.to_s)
+        expect(response.body).to include(enemy.level.to_s)
+        expect(response.body).to include(enemy.kind)
       end
     end
   end

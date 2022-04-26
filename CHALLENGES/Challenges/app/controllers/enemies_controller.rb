@@ -3,7 +3,7 @@ class EnemiesController < ApplicationController
   before_action :set_enemy, only: [:show, :destroy, :update]
 
   def index
-    @enemy = Enemy.all
+    @enemies = Enemy.all
   end
 
   def show
@@ -11,7 +11,7 @@ class EnemiesController < ApplicationController
   end
 
   def create
-    @enemy = Enemy.create(enemy_params)
+    @enemy = Enemy.create(enemy_param)
     redirect_to enemies_path
   end
 
@@ -23,10 +23,6 @@ class EnemiesController < ApplicationController
     end
   end
 
-  def enemy_params
-    params.require(:enemy).permit(:name, :power_base, :power_step, :level, :kind)
-  end
-
   def destroy
     @enemy.destroy
     head 204
@@ -36,6 +32,10 @@ class EnemiesController < ApplicationController
 
   def enemy_params
     params.permit(:name, :power_base, :power_step, :level, :kind)
+  end
+
+  def enemy_param
+    params.require(:enemy).permit(:name, :power_base, :power_step, :level, :kind)
   end
 
   def set_enemy
