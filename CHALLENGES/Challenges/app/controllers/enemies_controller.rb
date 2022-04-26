@@ -1,6 +1,19 @@
 class EnemiesController < ApplicationController
 
-  before_action :set_enemy
+  before_action :set_enemy, only: [:show, :destroy, :update]
+
+  def index
+    @enemy = Enemy.all
+  end
+
+  def show
+    @enemy
+  end
+
+  def create
+    @enemy = Enemy.create(enemy_params)
+    redirect_to enemies_path
+  end
 
   def update
     if @enemy.update(enemy_params)
@@ -8,6 +21,10 @@ class EnemiesController < ApplicationController
     else
       render json: { erros: @enemy.erros }, status: :unprocessable_entity
     end
+  end
+
+  def enemy_params
+    params.require(:enemy).permit(:name, :power_base, :power_step, :level, :kind)
   end
 
   def destroy
