@@ -1,11 +1,11 @@
 Rails.application.routes.draw do
   get 'weapons/index'
-  get 'weapons/create'
+  post 'weapons/create'
   get 'weapons/destroy'
   get 'weapons/show'
 
   get 'enemies/index'
-  get 'enemies/create'
+  post 'enemies/create'
   get 'enemies/destroy'
   get 'enemies/show'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -14,5 +14,5 @@ Rails.application.routes.draw do
   # root "articles#index"
 
   resources :weapons, only: [:index, :create, :destroy, :show]
-  resources :enemies, only: [:index, :show, :create,:update, :destroy]
+  resources :enemies, only: [:index, :create,:update, :destroy, :show]
 end

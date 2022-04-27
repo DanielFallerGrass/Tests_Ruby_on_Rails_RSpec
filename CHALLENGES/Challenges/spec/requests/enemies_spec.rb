@@ -94,7 +94,7 @@ RSpec.describe 'Enemies', type: :request do
 
   describe "GET /show" do
     context 'should have return details of one enemy' do
-      let(:enemy) { create(:enemy) }
+      let!(:enemy) { create(:enemy) }
 
       it "Whether all attributes have been displayed on the screen" do
         get enemies_path(enemy)
