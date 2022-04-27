@@ -93,17 +93,14 @@ RSpec.describe 'Enemies', type: :request do
   end
 
   describe "GET /show" do
-    context 'should have return details of one enemy' do
-      let!(:enemy) { create(:enemy) }
+    it "Whether all attributes have been displayed on the screen" do
+      enemy = create(:enemy)
 
-      it "Whether all attributes have been displayed on the screen" do
-        get enemies_path(enemy)
-        expect(response.body).to include(enemy.name)
-        expect(response.body).to include(enemy.power_base.to_s)
-        expect(response.body).to include(enemy.power_step.to_s)
-        expect(response.body).to include(enemy.level.to_s)
-        expect(response.body).to include(enemy.kind)
-      end
+      get enemy_path(enemy)
+      expect(response.body).to include(enemy.name)
+      expect(response.body).to include(enemy.power_base.to_s)
+      expect(response.body).to include(enemy.power_step.to_s)
+      expect(response.body).to include(enemy.level.to_s)
     end
   end
 end

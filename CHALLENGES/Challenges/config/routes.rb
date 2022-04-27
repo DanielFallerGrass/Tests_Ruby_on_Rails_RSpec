@@ -2,12 +2,10 @@ Rails.application.routes.draw do
   get 'weapons/index'
   post 'weapons/create'
   get 'weapons/destroy'
-  get 'weapons/show'
 
   get 'enemies/index'
   post 'enemies/create'
   get 'enemies/destroy'
-  get 'enemies/show'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
